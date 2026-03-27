@@ -82,21 +82,46 @@ python3 scripts/get_today_topic.py --period afternoon # 下午主题
 详细格式规范见 `references/content-template.md`。
 主题库见 `references/algorithm-topics.md`、`references/top100-topics.md`、`references/architecture-topics.md`、`references/ai-topics.md`。
 
-### Step 4：保存与推送
+### Step 4：保存 + 写入 Redoc + 推送
 
 1. 将内容写入 `memory/YYYY-MM-DD-{morning|afternoon}.md`（时段文件）
 2. 追加到 `memory/YYYY-MM-DD.md`（当天汇总）
-3. 更新推送状态：
+3. **写入 Redoc 学习空间子文档**：
 
 ```bash
-# 上午9点推送后更新
-python3 scripts/update_push_state.py --period morning
-
-# 下午14点推送后更新
-python3 scripts/update_push_state.py --period afternoon
+# 创建当次推送的 Redoc 文档
+REDOC_SKILL=/app/skills/hi-redoc-curd
+bash "$REDOC_SKILL/scripts/hi-redoc-curd.sh" \
+  -p memory/YYYY-MM-DD-{morning|afternoon}.md
+# 保存返回的 shortcutId 到 push-state.json
 ```
 
-4. 在当前会话展示内容给用户
+4. **更新学习空间索引文档**（父文档 ID: `86149ebd485f8a447b3760acfc5f4710`）：
+   - 在索引表格中追加新一行：日期 · 时段 · 内容摘要 · 新文档链接
+   - 保持历史记录完整，按日期倒序排列
+
+```bash
+# 更新学习空间父文档（追加新行到归档表格）
+bash "$REDOC_SKILL/scripts/hi-redoc-curd.sh" \
+  -u 86149ebd485f8a447b3760acfc5f4710 \
+  -c "（完整更新后的学习空间文档内容）"
+```
+
+5. 更新推送状态：
+
+```bash
+python3 scripts/update_push_state.py --period morning    # 上午
+python3 scripts/update_push_state.py --period afternoon  # 下午
+```
+
+6. 在当前会话展示内容，并回复 Redoc 链接给用户
+
+## Redoc 配置
+
+- **学习空间父文档**: `https://docs.xiaohongshu.com/doc/86149ebd485f8a447b3760acfc5f4710`
+- **父文档 shortcutId**: `86149ebd485f8a447b3760acfc5f4710`
+- 每次推送创建一个子文档，并更新父文档的归档索引表格
+- push-state.json 中新增 `redocHistory` 记录每次推送的 shortcutId
 
 ## 推送时段配置
 
