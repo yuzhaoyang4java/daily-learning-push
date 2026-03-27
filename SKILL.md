@@ -96,15 +96,20 @@ bash "$REDOC_SKILL/scripts/hi-redoc-curd.sh" \
 # 保存返回的 shortcutId 到 push-state.json
 ```
 
-4. **更新学习空间索引文档**（父文档 ID: `86149ebd485f8a447b3760acfc5f4710`）：
+4. **更新学习空间索引文档**（可选，用户需配置自己的 Redoc 父文档）：
    - 在索引表格中追加新一行：日期 · 时段 · 内容摘要 · 新文档链接
+   - 如果未配置 Redoc，则跳过此步骤，仅保存本地文件
    - 保持历史记录完整，按日期倒序排列
 
 ```bash
 # 更新学习空间父文档（追加新行到归档表格）
-bash "$REDOC_SKILL/scripts/hi-redoc-curd.sh" \
-  -u 86149ebd485f8a447b3760acfc5f4710 \
-  -c "（完整更新后的学习空间文档内容）"
+# 父文档 ID 从配置文件读取
+PARENT_DOC_ID=$(cat ~/.openclaw/workspace/memory/.redoc-config.json 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin).get('parentDocId',''))")
+if [ -n "$PARENT_DOC_ID" ]; then
+  bash "$REDOC_SKILL/scripts/hi-redoc-curd.sh" \
+    -u "$PARENT_DOC_ID" \
+    -c "（完整更新后的学习空间文档内容）"
+fi
 ```
 
 5. 更新推送状态：
@@ -116,12 +121,47 @@ python3 scripts/update_push_state.py --period afternoon  # 下午
 
 6. 在当前会话展示内容，并回复 Redoc 链接给用户
 
-## Redoc 配置
+## Redoc 配置（可选）
 
-- **学习空间父文档**: `https://docs.xiaohongshu.com/doc/86149ebd485f8a447b3760acfc5f4710`
-- **父文档 shortcutId**: `86149ebd485f8a447b3760acfc5f4710`
-- 每次推送创建一个子文档，并更新父文档的归档索引表格
-- push-state.json 中新增 `redocHistory` 记录每次推送的 shortcutId
+如果需要将推送内容归档到 Redoc 学习空间，需先配置：
+
+### 创建配置
+
+在你的工作区运行：
+
+```python
+# 创建 Redoc 配置文件
+import json
+
+config = {
+  "parentDocId": "你的学习空间父文档 shortcutId",
+  "enabled": True,
+  "autoUpdateIndex": True
+}
+
+with open('~/.openclaw/workspace/memory/.redoc-config.json', 'w') as f:
+  json.dump(config, f, indent=2)
+```
+
+### 获取父文档shortcutId步骤
+
+1. 在 Redoc 创建学习空间父文档（如：`个人学习空间·技术成长`）
+2. 打开文档 → 复制 URL 中的 shortcutId
+3. 例如：`https://docs.xiaohongshu.com/doc/ABCD1234` → shortcutId = `ABCD1234`
+
+### 配置说明
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| `parentDocId` | 你的学习空间父文档 ID | 空（需自己填写） |
+| `enabled` | 启用 Redoc 归档 | true |
+| `autoUpdateIndex` | 自动更新父文档索引 | true |
+
+### 归档流程
+
+- 启用 Redoc 后，每次推送会创建独立的子文档
+- 父文档中的归档索引表格自动更新
+- `push-state.json` 中记录每次推送的 shortcutId
 
 ## 推送时段配置
 
