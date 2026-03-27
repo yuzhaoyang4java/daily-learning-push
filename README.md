@@ -42,6 +42,40 @@ daily-learning-push/
     ├── architecture-roadmap.md # 架构学习路线
     ├── ai-roadmap.md           # AI 学习路线
     └── tech-news-template.md   # 前沿资讯模板
+
+# 本地运行时生成（已排除在 GitHub 同步外）
+~/.openclaw/workspace/memory/   # OpenClaw 工作区 memory 目录
+├── push-state.json             # 个人推送进度和索引状态
+├── 2026-03-27-morning.md       # 每日上午推送内容
+├── 2026-03-27-afternoon.md     # 每日下午推送内容
+└── 2026-03-27.md               # 当天内容汇总
+```
+
+### 数据存储架构说明
+
+本项目采用**代码与数据分离**的设计：
+
+| 位置 | 内容 | 同步策略 | 用途 |
+|------|------|----------|------|
+| `scripts/` `references/` | 脚本和主题库 | ✅ GitHub 同步 | **公共代码**，可多人复用 |
+| `memory/` | 推送状态和学习记录 | ❌ 本地保存 | **个人数据**，时序敏感 |
+| **Redoc** | 归档文档 | ☁️ 云端存储 | **永久备份**，跨设备访问 |
+
+**为何 `memory/` 不提交到 GitHub？**
+
+1. **个人化** — `push-state.json` 记录的是你的推送进度（如 Day 8），若同步给他人会混淆
+2. **时序敏感** — 每天索引递增，不同用户使用进度不同
+3. **可重建** — 即使丢失也不影响功能，下次推送会重新创建
+4. **隐私** — 学习记录属于个人使用痕迹
+
+**如何备份个人记录？**
+
+```bash
+# 方案1：本地备份
+cp -r ~/.openclaw/workspace/memory ~/Documents/backup/
+
+# 方案2：Redoc 归档（推荐）
+# 每次推送自动写入 Redoc 云端，历史内容永不丢失
 ```
 
 ## 🚀 使用方式
