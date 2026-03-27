@@ -1,78 +1,123 @@
 ---
 name: daily-learning-push
-description: 每日技术学习内容生成与推送 Skill，面向后端工程师（Java/Go 等）。每天主动推送三个方向的详细学习内容：算法题（LeetCode）、系统架构、AI大模型。内容包含完整代码示例、原理图解、业务场景联想，适合中高级工程师进阶。触发场景：(1) 心跳检查时判断今日未推送则自动生成；(2) 用户说"今日学习"、"给我推送内容"、"每日推送"、"学习内容"等；(3) 用户反馈内容不够详细时重新生成。
+description: 每日技术学习内容生成与推送 Skill，面向后端工程师（Java/Go 等）。每天两次主动推送丰富内容：上午9点和下午14点各推送算法题（2道）+ 架构 + AI大模型 + 前沿资讯（3篇）。内容包含完整代码示例、原理图解、业务场景联想，适合中高级工程师进阶。触发场景：(1) 心跳检查时判断当前时段是否已推送；(2) 用户说"今日学习"、"给我推送内容"、"每日推送"、"学习内容"等；(3) 用户反馈内容不够详细时重新生成。
 ---
 
 # Daily Learning Push
 
-每日技术学习内容推送，三方向并行：算法 + 架构 + AI大模型。
+每日技术学习内容推送，**每天2次**：上午9点 + 下午14点。
+
+**每次推送内容：**
+- 🧮 **算法题 2道**（完整题库1道 + Top100热题1道）
+- 🏗️ **架构专题 1篇**（原理+图解+代码+业务场景）
+- 🤖 **AI大模型 1篇**（概念+实现+应用）
+- 📰 **前沿资讯 3篇**（技术趋势、行业动态）
 
 ## 工作流
 
-### Step 1：检查今日是否已推送
+### Step 1：检查当前时段是否已推送
 
-运行脚本判断幂等状态：
+运行脚本判断幂等状态（区分早上/下午时段）：
 
 ```bash
-python3 scripts/check_push_state.py
+# 上午9点检查
+python3 scripts/check_push_state.py --period morning
+
+# 下午14点检查  
+python3 scripts/check_push_state.py --period afternoon
 ```
 
-- 输出 `ALREADY_PUSHED`：今日已推送，跳过（回复用户已推送并展示内容路径）
+- 输出 `ALREADY_PUSHED`：当前时段已推送，跳过
 - 输出 `NOT_PUSHED`：继续执行
 
 ### Step 2：获取今日主题
 
 ```bash
-python3 scripts/get_today_topic.py
+python3 scripts/get_today_topic.py --period morning   # 上午主题
+python3 scripts/get_today_topic.py --period afternoon # 下午主题
 ```
 
-输出 JSON，包含今日三个方向的主题和序号：
+输出 JSON，包含时段内容和序号：
 
+**morning 示例：**
 ```json
 {
+  "period": "morning",
   "day": 4,
-  "algorithm": { "index": 3, "topic": "最长回文子串", "leetcode": 5, "difficulty": "Medium" },
-  "architecture": { "index": 3, "topic": "消息队列原理与实战" },
-  "ai": { "index": 3, "topic": "Prompt Engineering 进阶" }
+  "algorithm": { "index": 7, "topic": "三数之和 (LeetCode 15)", "difficulty": "Medium" },
+  "algorithm_top100": { "index": 3, "topic": "两数之和 (LeetCode 1)", "difficulty": "Easy" },
+  "architecture": { "index": 5, "topic": "分布式事务 Seata 原理" },
+  "ai": { "index": 5, "topic": "向量数据库与 RAG 实践" },
+  "tech_news": ["OpenAI GPT-5 预览", "Google Gemini 2.5 Pro 发布", "国内大模型价格战分析"]
+}
+```
+
+**afternoon 示例：**
+```json
+{
+  "period": "afternoon",
+  "day": 4,
+  "day_offset": 500, 
+  "algorithm": { "index": 507, "topic": "二叉树最大路径和 (LeetCode 124)", "difficulty": "Hard" },
+  "algorithm_top100": { "index": 23, "topic": "有效括号 (LeetCode 20)", "difficulty": "Easy" },
+  "architecture": { "index": 18, "topic": "Redis Cluster 设计与实战" },
+  "ai": { "index": 18, "topic": "LLM 微调策略全解析" },
+  "tech_news": ["阿里巴巴通义千问 Qwen3 官宣", "GitHub Copilot 免费版上线", "Cursor 0.50 AI IDE 评测"]
 }
 ```
 
 ### Step 3：生成详细内容
 
-读取 `references/content-template.md` 获取格式规范，按模板生成三方向内容。
+读取 `references/content-template.md` 获取格式规范，按模板生成各方向内容。
 
 **内容质量标准（必须满足）：**
 
-- 🧮 **算法**：题目描述 + 暴力解 → 优化解演进 + 至少 2 种解法完整代码 + 复杂度分析 + 变种题 + 面试追问
-- 🏗️ **架构**：原理详解 + ASCII 架构图 + 关键代码示例 + 对比表格 + 小红书/电商业务场景联想 + 面试高频问题
-- 🤖 **AI**：概念解释 + 完整流程图 + 工程实现要点 + 业务场景应用 + 效果评估方法
+| 类型 | 要求 |
+|------|------|
+| 🧮 **算法题×2** | 题目描述 + 暴力解→优化解演进 + 完整代码 + 复杂度分析 |
+| 🏗️ **架构专题** | 原理详解 + ASCII 架构图 + 代码示例 + 业务场景 |
+| 🤖 **AI 专题** | 概念 + 流程图 + 实现要点 + 应用案例 |
+| 📰 **前沿资讯×3** | 标题 + 一句话总结 + 来源链接（可选） |
 
 详细格式规范见 `references/content-template.md`。
-主题库见 `references/algorithm-topics.md`、`references/architecture-topics.md`、`references/ai-topics.md`。
+主题库见 `references/algorithm-topics.md`、`references/top100-topics.md`、`references/architecture-topics.md`、`references/ai-topics.md`。
 
 ### Step 4：保存与推送
 
-1. 将内容写入 `memory/YYYY-MM-DD.md`（覆盖当天文件）
-2. 更新推送状态：
+1. 将内容写入 `memory/YYYY-MM-DD-{morning|afternoon}.md`（时段文件）
+2. 追加到 `memory/YYYY-MM-DD.md`（当天汇总）
+3. 更新推送状态：
 
 ```bash
-python3 scripts/update_push_state.py
+# 上午9点推送后更新
+python3 scripts/update_push_state.py --period morning
+
+# 下午14点推送后更新
+python3 scripts/update_push_state.py --period afternoon
 ```
 
-3. 直接在当前会话中展示内容给用户
+4. 在当前会话展示内容给用户
+
+## 推送时段配置
+
+推送状态保存在 `memory/push-state.json`，结构：
+
+```json
+{
+  "lastMorningPush": "2026-03-27",
+  "lastAfternoonPush": "2026-03-27",
+  "dailyProgress": { "morning": { ... }, "afternoon": { ... } }
+}
+```
 
 ## 用户配置
 
-安装后在工作区 `MEMORY.md` 中添加以下配置（可选，不配置则使用默认值）：
+安装后在工作区 `MEMORY.md` 中添加以下配置（可选，使用默认值）：
 
 ```markdown
 ## 每日学习推送配置
 - 技术方向：Java 后端（默认）
 - 当前水平：中级（默认）
 - 业务背景：电商/社交（默认）
-- 推送时间：每天上午（心跳触发）
+- 推送时间：上午9点 + 下午14点
 ```
-
-## 状态文件
-
-推送状态保存在 `memory/push-state.json`，结构见 `references/content-template.md`。
