@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """
-根据 push-state.json 中的当前序号，从主题库中取出今日五方向主题。
-输出 JSON 到 stdout，供 agent 使用。
+根据 push-state.json 中的当前序号，从主题库中取出今日各时段主题。
+用法：get_today_topic.py --period morning|afternoon
 
-五方向：
-1. 算法 - 完整题库（2000+体系）
-2. 算法 - Top 100 热题
-3. 架构
-4. AI
-5. 前沿技术资讯
+每次推送内容：
+- 算法 1道（完整题库）
+- 算法 1道（Top 100 热题）
+- 架构 1篇
+- AI 1篇
+- 前沿资讯 3篇
 
-每方向至少推送4篇详细内容。
+时段差异：
+- morning: 从当前索引开始
+- afternoon: 索引 + 500 偏移（避免与上午重复）
 """
 
 import json
 import os
-import sys
+import argparse
 from datetime import date
 
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,26 +33,30 @@ def load_state():
         return {
             "lastPushDate": None,
             "totalDays": 0,
+            "totalPushes": 0,
             "nextIndex": {
-                "algorithm": 0,      # 完整题库索引
-                "top100": 0,         # Top 100 索引
-                "architecture": 0, 
-                "ai": 0, 
+                "algorithm": 0,
+                "algorithm_top100": 0,
+                "architecture": 0,
+                "ai": 0,
                 "technews": 0
-            }
+            },
+            "batchSize": 1
         }
     with open(STATE_FILE, "r", encoding="utf-8") as f:
         state = json.load(f)
-    # 兼容旧版本
+    # 兼容新版本字段名
     idx = state.setdefault("nextIndex", {})
-    if "top100" not in idx:
-        idx["top100"] = 0
+    if "algorithm_top100" not in idx and "top100" in idx:
+        idx["algorithm_top100"] = idx["top100"]
     return state
 
 # ---------- 解析主题库 Markdown ----------
-def parse_topic_table(md_path):
+def parse_topic_table(md_path, has_link_column=True):
     """解析 references/*.md 中的 Markdown 表格，返回 list of dict"""
     topics = []
+    if not os.path.exists(md_path):
+        return topics
     with open(md_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
@@ -58,7 +64,7 @@ def parse_topic_table(md_path):
     headers = []
     for line in lines:
         line = line.strip()
-        if line.startswith("| 序号"):
+        if line.startswith("|") and ("题号" in line or "序号" in line or "LeetCode" in line):
             headers = [h.strip() for h in line.strip("|").split("|")]
             in_table = True
             continue
@@ -68,23 +74,27 @@ def parse_topic_table(md_path):
                     in_table = False
                 continue
             cells = [c.strip() for c in line.strip("|").split("|")]
-            if len(cells) >= 2 and cells[0].isdigit():
-                row = dict(zip(headers, cells))
-                topics.append(row)
+            if len(cells) >= 2:
+                # 检查是否包含数字（题号或序号）
+                first_cell = cells[0].strip()
+                if first_cell.isdigit() or (len(cells) > 1 and cells[1].strip().isdigit()):
+                    row = dict(zip(headers, cells))
+                    topics.append(row)
     return topics
 
-# ---------- 获取多个连续主题 ----------
-def get_topics_batch(topics, start_index, batch_size=4):
-    """获取从 start_index 开始的 batch_size 个主题"""
+# ---------- 获取单个主题 ----------
+def get_topic(topics, index):
+    """获取指定索引的主题"""
     if not topics:
-        return [{"error": "主题库为空"}]
-    result = []
-    for i in range(batch_size):
-        idx = (start_index + i) % len(topics)
-        result.append(topics[idx])
-    return result
+        return {"error": "主题库为空", "index": index}
+    idx = index % len(topics)
+    return topics[idx]
 
 # ---------- 主逻辑 ----------
+parser = argparse.ArgumentParser()
+parser.add_argument("--period", choices=["morning", "afternoon"], default="morning")
+args = parser.parse_args()
+
 state = load_state()
 idx = state.get("nextIndex", {})
 
@@ -95,56 +105,58 @@ arch_path = os.path.join(SKILL_DIR, "references", "architecture-topics.md")
 ai_path = os.path.join(SKILL_DIR, "references", "ai-topics.md")
 
 algo_topics = parse_topic_table(algo_path)
-top100_topics = parse_topic_table(top100_path)
-arch_topics = parse_topic_table(arch_path)
-ai_topics = parse_topic_table(ai_path)
+top100_topics = parse_topic_table(top100_path, has_link_column=True)
+arch_topics = parse_topic_table(arch_path, has_link_column=False)
+ai_topics = parse_topic_table(ai_path, has_link_column=False)
 
-# 获取各方向当前索引
-algo_idx = idx.get("algorithm", 0)
-top100_idx = idx.get("top100", 0)
-arch_idx = idx.get("architecture", 0)
-ai_idx = idx.get("ai", 0)
+# 下午时段使用索引偏移，避免重复
+DAY_OFFSET = 500 if args.period == "afternoon" else 0
+
+# 获取各方向当前索引（下午+偏移量）
+algo_idx = idx.get("algorithm", 0) + DAY_OFFSET
+top100_idx = idx.get("algorithm_top100", idx.get("top100", 0)) + DAY_OFFSET
+arch_idx = idx.get("architecture", 0) + DAY_OFFSET
+ai_idx = idx.get("ai", 0) + DAY_OFFSET
 
 result = {
+    "period": args.period,
     "today": date.today().isoformat(),
     "day": state.get("totalDays", 0) + 1,
-    "batchSize": 4,  # 每个方向推送4篇
-    "directions": {
+    "batchSize": 1,
+    "contents": {
         "algorithm": {
             "name": "算法 - 完整题库",
             "index": algo_idx,
             "total": len(algo_topics),
-            "topics": get_topics_batch(algo_topics, algo_idx, 4),
-            "requirement": "4道算法题，每题包含：暴力解→优化解演进、完整代码、复杂度分析、图解、变种题、面试追问"
+            "topic": get_topic(algo_topics, algo_idx),
+            "requirement": "题目 + 暴力解→优化解演进 + 完整代码 + 复杂度分析 + 变种题"
         },
-        "top100": {
-            "name": "算法 - Top 100 热题",
+        "algorithm_top100": {
+            "name": "算法 - 热题 100",
             "index": top100_idx,
             "total": len(top100_topics),
-            "topics": get_topics_batch(top100_topics, top100_idx, 4),
-            "requirement": "4道LeetCode热题100题目，重点突破，详细讲解最优解"
+            "topic": get_topic(top100_topics, top100_idx),
+            "requirement": "LeetCode热题100，最优解详解，面试重点关注"
         },
         "architecture": {
             "name": "架构设计",
             "index": arch_idx,
             "total": len(arch_topics),
-            "topics": get_topics_batch(arch_topics, arch_idx, 4),
-            "requirement": "4个架构主题，每个包含：原理详解、架构图、代码示例、业务场景、面试题"
+            "topic": get_topic(arch_topics, arch_idx),
+            "requirement": "原理 + 架构图 + 代码示例 + 业务场景 + 面试题"
         },
         "ai": {
             "name": "AI 大模型",
             "index": ai_idx,
             "total": len(ai_topics),
-            "topics": get_topics_batch(ai_topics, ai_idx, 4),
-            "requirement": "4个AI主题，每个包含：概念解释、流程图、工程实践、业务应用、评估指标"
+            "topic": get_topic(ai_topics, ai_idx),
+            "requirement": "概念 + 流程图 + 工程实践 + 业务应用"
         },
         "technews": {
             "name": "前沿技术资讯",
             "index": idx.get("technews", 0),
-            "enabled": True,
-            "minArticles": 4,
-            "categories": ["前沿技术迭代", "架构设计", "AI大模型"],
-            "requirement": "至少4篇最新最热技术资讯，每篇包含：来源、摘要、要点、链接、标签"
+            "count": 3,
+            "requirement": "3篇最新最热技术资讯，每篇：标题+简要总结"
         }
     }
 }
