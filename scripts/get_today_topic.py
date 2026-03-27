@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-根据 push-state.json 中的当前序号，从主题库中取出今日三方向主题。
+根据 push-state.json 中的当前序号，从主题库中取出今日四方向主题。
 输出 JSON 到 stdout，供 agent 使用。
+新增第四方向：technews（每日最新最热技术资讯，≥3篇）
 """
 
 import json
@@ -22,10 +23,14 @@ def load_state():
         return {
             "lastPushDate": None,
             "totalDays": 0,
-            "nextIndex": {"algorithm": 0, "architecture": 0, "ai": 0}
+            "nextIndex": {"algorithm": 0, "architecture": 0, "ai": 0, "technews": 0}
         }
     with open(STATE_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+        state = json.load(f)
+    # 兼容旧版本（无 technews 字段）
+    if "technews" not in state.get("nextIndex", {}):
+        state.setdefault("nextIndex", {})["technews"] = 0
+    return state
 
 # ---------- 解析主题库 Markdown ----------
 def parse_topic_table(md_path):
@@ -55,7 +60,7 @@ def parse_topic_table(md_path):
 
 # ---------- 主逻辑 ----------
 state = load_state()
-idx = state.get("nextIndex", {"algorithm": 0, "architecture": 0, "ai": 0})
+idx = state.get("nextIndex", {"algorithm": 0, "architecture": 0, "ai": 0, "technews": 0})
 
 algo_path = os.path.join(SKILL_DIR, "references", "algorithm-topics.md")
 arch_path = os.path.join(SKILL_DIR, "references", "architecture-topics.md")
@@ -88,6 +93,13 @@ result = {
     "ai": {
         "index": idx.get("ai", 0),
         "data": ai
+    },
+    "technews": {
+        "index": idx.get("technews", 0),
+        "enabled": True,
+        "minArticles": 3,
+        "categories": ["前沿技术迭代", "架构设计", "AI大模型"],
+        "instruction": "搜索今日最新最热技术资讯，每个分类至少1篇，共不少于3篇，格式参考 references/tech-news-template.md"
     }
 }
 
