@@ -4,10 +4,21 @@
 
 ## 🎯 功能
 
-每天主动推送三个方向的详细学习内容：
-- 🧮 **算法题**（LeetCode）：经典题目 + 多解法 + 复杂度分析
-- 🏗️ **系统架构**：分布式系统原理 + 实战代码
-- 🤖 **AI 大模型**：Prompt Engineering + 业务应用
+**每天 2 次** 主动推送丰富技术内容：
+
+| 时段 | 时间 | 推送内容 |
+|------|------|----------|
+| 🌅 **上午** | 9:00 | 算法2道 + 架构1篇 + AI 1篇 + 资讯3篇 |
+| 🌇 **下午** | 14:00 | 算法2道 + 架构1篇 + AI 1篇 + 资讯3篇 |
+
+### 每次推送详情
+
+- 🧮 **算法题 2道**
+  - 完整题库 1道（覆盖 LeetCode 2000+ 题）
+  - LeetCode 热题 100 精选 1道（面试高频）
+- 🏗️ **系统架构 1篇** — 分布式原理 + 架构图 + 实战代码 + 业务场景
+- 🤖 **AI 大模型 1篇** — 概念解析 + 流程图 + 工程实现 + 应用案例
+- 📰 **前沿资讯 3篇** — 最新技术动态、行业趋势、产品发布
 
 ## 📦 项目结构
 
@@ -15,16 +26,22 @@
 daily-learning-push/
 ├── SKILL.md                    # Skill 定义文件
 ├── README.md                   # 项目说明
+├── HEARTBEAT.md                # 心跳推送配置指南
 ├── scripts/                    # 核心脚本
-│   ├── check_push_state.py     # 检查今日是否已推送
-│   ├── get_today_topic.py      # 获取今日三方向主题
+│   ├── check_push_state.py     # 检查时段是否已推送
+│   ├── get_today_topic.py      # 获取各时段主题
 │   ├── update_push_state.py    # 更新推送状态
-│   └── heartbeat_check.sh      # 心跳检查脚本
-└── references/                 # 参考数据
+│   └── heartbeat_check.sh      # 心跳时段检测脚本
+└── references/                 # 主题库与模板
     ├── content-template.md     # 内容格式规范
-    ├── algorithm-topics.md     # 算法题目库
+    ├── algorithm-topics.md     # 算法题库（完整+链接）
+    ├── top100-topics.md        # LeetCode 热题100（完整链接版）
     ├── architecture-topics.md  # 架构主题库
-    └── ai-topics.md            # AI 主题库
+    ├── ai-topics.md            # AI 主题库
+    ├── algorithm-roadmap.md    # 算法学习路线
+    ├── architecture-roadmap.md # 架构学习路线
+    ├── ai-roadmap.md           # AI 学习路线
+    └── tech-news-template.md   # 前沿资讯模板
 ```
 
 ## 🚀 使用方式
@@ -36,53 +53,120 @@ daily-learning-push/
    cp -r daily-learning-push ~/.openclaw/workspace/skills/
    ```
 
-2. 在 `HEARTBEAT.md` 中添加调用逻辑（参考 SKILL.md）
+2. 配置 `HEARTBEAT.md`（参考本目录下的 HEARTBEAT.md）
 
-3. 或使用手动触发：
+3. 或在 `.openclaw/workspace` 目录下创建 `HEARTBEAT.md` 并引用：
    ```bash
-   cd ~/.openclaw/workspace/skills/daily-learning-push
-   python3 scripts/check_push_state.py
+   # 复制示例配置
+   cp ~/.openclaw/workspace/skills/daily-learning-push/HEARTBEAT.md \
+      ~/.openclaw/workspace/HEARTBEAT.md
    ```
 
-### 独立使用
+### 手动触发验证
 
 ```bash
-# 检查今日状态
-python3 scripts/check_push_state.py
+cd ~/.openclaw/workspace/skills/daily-learning-push
+
+# 检查时段状态
+python3 scripts/check_push_state.py --period morning
+python3 scripts/check_push_state.py --period afternoon
 
 # 获取今日主题
-python3 scripts/get_today_topic.py
+python3 scripts/get_today_topic.py --period morning    # 上午主题
+python3 scripts/get_today_topic.py --period afternoon  # 下午主题（索引+500）
 
-# 更新状态（推送后执行）
-python3 scripts/update_push_state.py
+# 心跳时段检测
+bash scripts/heartbeat_check.sh
+
+# 推送后更新状态
+python3 scripts/update_push_state.py --period morning
+python3 scripts/update_push_state.py --period afternoon
 ```
 
 ## 📋 内容质量标准
 
 | 方向 | 要求 |
 |------|------|
-| 🧮 算法 | ≥2 种解法完整代码 + 复杂度分析 + 变种题 + 面试追问 |
-| 🏗️ 架构 | ASCII 架构图 + 完整 Java 代码 + 业务场景 + 面试高频问题 |
-| 🤖 AI | 完整流程图 + 工程实现要点 + 业务场景应用 + 评估指标 |
+| 🧮 算法-完整题库 | 题目描述 + 暴力→优化解演进 + 完整代码 + 复杂度分析 + 变种题 |
+| 🧮 算法-Top100 | LeetCode 热题精选，最优解详解，面试重点标注 |
+| 🏗️ 架构 | 原理详解 + ASCII 架构图 + 完整 Java/Go 代码 + 业务场景 + 面试高频问题 |
+| 🤖 AI | 概念解释 + 完整流程图 + 工程实现要点 + 业务场景应用 |
+| 📰 资讯 | 标题 + 一句话总结（3篇最新最热技术动态） |
 
-## 🔄 自动化支持
+## ⏰ 自动化配置
 
-- **OpenClaw 心跳**：自动检测时间并推送
-- **分时段策略**：工作日 15m / 夜间周末 1h
+### 推送时段
 
-## 📝 主题库
+```
+9:00  ± 5分钟   → 上午推送
+copy14:00 ± 5分钟   → 下午推送
+```
 
-- 算法：[LeetCode 经典题](/references/algorithm-topics.md)
-- 架构：[分布式系统](/references/architecture-topics.md)
-- AI：[大模型应用](/references/ai-topics.md)
+### 心跳频率
+
+```bash
+# 通过 auto_switch_heartbeat.sh 自动调节
+bash scripts/auto_switch_heartbeat.sh
+
+# 工作日 08:00-18:00 → 15分钟心跳（高频检测）
+# 其他时间 → 1小时心跳（低频节能）
+```
+
+### 状态文件
+
+```json
+{
+  "lastMorningPush": "2026-03-27",
+  "lastAfternoonPush": "2026-03-27",
+  "totalDays": 7,
+  "totalPushes": 14,
+  "nextIndex": {
+    "algorithm": 9,
+    "algorithm_top100": 5,
+    "architecture": 10,
+    "ai": 10,
+    "technews": 3
+  }
+}
+```
+
+## 📚 主题库
+
+| 主题库 | 链接 | 数量 |
+|--------|------|------|
+| 算法-完整题库 | [algorithm-topics.md](/references/algorithm-topics.md) | 69+ 题（带链接） |
+| 算法-热题100 | [top100-topics.md](/references/top100-topics.md) | 100 题（面试必刷，完整链接） |
+| 架构设计 | [architecture-topics.md](/references/architecture-topics.md) | 200+ 主题 |
+| AI 大模型 | [ai-topics.md](/references/ai-topics.md) | 200+ 主题 |
+| 前沿资讯 | [tech-news-template.md](/references/tech-news-template.md) | 动态生成 |
+
+### 快速访问 LeetCode
+
+所有算法题均附带完整链接，格式：`https://leetcode.cn/problems/{slug}/`
+
+热题 100 学习计划页面：https://leetcode.cn/studyplan/top-100-liked/
+
+## 🗓️ 学习路线
+
+- 📈 [算法学习路线](/references/algorithm-roadmap.md)
+- 🏛️ [架构学习路线](/references/architecture-roadmap.md)
+- 🧠 [AI 学习路线](/references/ai-roadmap.md)
+
+## 📝 近期更新
+
+- **v4.3** (2026-03-27): 双时段推送调试验证，heartbeat 配置完善
+- **v4.2** (2026-03-27): 调整为每天2次推送（9:00 + 14:00）
+- **v4.1** (2026-03-27): 添加完整 LeetCode 题目链接
+- **v4.0** (2026-03-27): 新增 5 方向内容（算法/架构/AI/资讯/推荐）
 
 ## 🤝 贡献
 
 欢迎提交 PR 补充：
-- 新的算法题
-- 架构主题
-- AI 应用场景
-- 代码优化
+- 新的算法题（附带 LeetCode 链接）
+- 架构设计主题与实战案例
+- AI 应用场景与工程实践
+- 前沿技术资讯来源
+- 代码优化与文档改进
 
 ## 📄 License
 
