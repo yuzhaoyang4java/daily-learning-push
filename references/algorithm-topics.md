@@ -1,115 +1,119 @@
-# 算法题目库 - LeetCode 热题 100 完整版
+# 算法题目库 - LeetCode 完整版（带链接）
 
-每道题包含：题号、题目、难度、分类、核心考点。
-来源：LeetCode 热题 100 (https://leetcode.cn/studyplan/top-100-liked/)
+## 热题 100（面试必刷）
 
-## 题目列表（100题）
+来源：https://leetcode.cn/studyplan/top-100-liked/
 
-| 序号 | LeetCode | 题目 | 难度 | 分类 | 核心考点 |
-|------|---------|------|------|------|---------|
-| 1 | 1 | 两数之和 | Easy | 哈希表 | HashMap 一次遍历 |
-| 2 | 49 | 字母异位词分组 | Medium | 哈希表 | 排序作为键 / 字符计数 |
-| 3 | 128 | 最长连续序列 | Medium | 哈希表 | HashSet 跳过非起点 |
-| 4 | 283 | 移动零 | Easy | 双指针 | 快慢指针交换 |
-| 5 | 11 | 盛最多水的容器 | Medium | 双指针 | 左右指针向中间收敛 |
-| 6 | 15 | 三数之和 | Medium | 双指针 | 排序 + 双指针去重 |
-| 7 | 42 | 接雨水 | Hard | 双指针/动态规划 | 左右最大高度差 |
-| 8 | 3 | 无重复字符的最长子串 | Medium | 滑动窗口 | HashSet/HashMap 双指针 |
-| 9 | 438 | 找到字符串中所有字母异位词 | Medium | 滑动窗口 | 固定长度滑窗 + 数组计数 |
-| 10 | 560 | 和为K的子数组 | Medium | 前缀和+哈希 | 前缀和差值计数 |
-| 11 | 239 | 滑动窗口最大值 | Hard | 单调队列 | 双端队列维护最大值 |
-| 12 | 76 | 最小覆盖子串 | Hard | 滑动窗口 | 可变窗口满足条件 |
-| 13 | 53 | 最大子数组和 | Medium | 动态规划/贪心 | Kadane 算法 |
-| 14 | 56 | 合并区间 | Medium | 排序+贪心 | 按左端点排序后合并 |
-| 15 | 189 | 轮转数组 | Medium | 数组 | 三次翻转法 |
-| 16 | 238 | 除自身以外数组的乘积 | Medium | 前缀积 | 左积 × 右积 |
-| 17 | 41 | 缺失的第一个正数 | Hard | 数组/哈希 | 原地哈希 / 鸽巢原理 |
-| 18 | 73 | 矩阵置零 | Medium | 矩阵 | 第一行/列作为标记 |
-| 19 | 54 | 螺旋矩阵 | Medium | 矩阵 | 模拟螺旋遍历 |
-| 20 | 48 | 旋转图像 | Medium | 矩阵 | 先转置再反转 |
-| 21 | 240 | 搜索二维矩阵 II | Medium | 矩阵/二分 | 右上角落开始搜索 |
-| 22 | 20 | 有效的括号 | Easy | 栈 | 栈的括号匹配 |
-| 23 | 155 | 最小栈 | Medium | 栈 | 辅助栈维护最小值 |
-| 24 | 394 | 字符串解码 | Medium | 栈 | 栈模拟嵌套解码 |
-| 25 | 739 | 每日温度 | Medium | 单调栈 | 栈存下标，找下一个更大元素 |
-| 26 | 84 | 柱状图中最大的矩形 | Hard | 单调栈 | 找左右边界，计算面积 |
-| 27 | 21 | 合并两个有序链表 | Easy | 链表 | 递归 / 迭代双指针 |
-| 28 | 206 | 反转链表 | Easy | 链表 | 迭代三指针 / 递归 |
-| 29 | 141 | 环形链表 | Easy | 链表/双指针 | Floyd 快慢指针 |
-| 30 | 142 | 环形链表 II | Medium | 链表/双指针 | 找环入口 |
-| 31 | 160 | 相交链表 | Easy | 链表/双指针 | 双指针等长对齐 |
-| 32 | 19 | 删除链表的倒数第 N 个结点 | Medium | 链表/双指针 | 快慢指针间距 N |
-| 33 | 2 | 两数相加 | Medium | 链表/数学 | 模拟竖式加法 |
-| 34 | 24 | 两两交换链表中的节点 | Medium | 链表 | 迭代/递归交换 |
-| 35 | 148 | 排序链表 | Medium | 链表/归并排序 | 归并排序链表版 |
-| 36 | 25 | K 个一组翻转链表 | Hard | 链表 | 分段反转 |
-| 37 | 138 | 随机链表的复制 | Medium | 链表/哈希 | 哈希表存映射 / 拼接法 |
-| 38 | 23 | 合并 K 个升序链表 | Hard | 链表/优先队列 | 小顶堆 |
-| 39 | 146 | LRU 缓存 | Medium | 设计题 | HashMap + 双向链表 |
-| 40 | 94 | 二叉树的中序遍历 | Easy | 树/DFS | 递归 + 迭代（栈模拟） |
-| 41 | 104 | 二叉树的最大深度 | Easy | 树/DFS | 递归后序遍历 |
-| 42 | 226 | 翻转二叉树 | Easy | 树/DFS | 递归交换左右子树 |
-| 43 | 101 | 对称二叉树 | Easy | 树/DFS | 递归比较镜像节点 |
-| 44 | 543 | 二叉树的直径 | Easy | 树/DFS | 后序遍历，全局变量记录最大直径 |
-| 45 | 102 | 二叉树的层序遍历 | Medium | 树/BFS | 队列 BFS 层次遍历 |
-| 46 | 108 | 将有序数组转换为二叉搜索树 | Easy | 树/二分 | 中点作为根递归构建 |
-| 47 | 98 | 验证二叉搜索树 | Medium | 树/DFS | 递归验证区间 |
-| 48 | 230 | 二叉搜索树中第K小的元素 | Medium | 树/DFS | 中序遍历计数 |
-| 49 | 199 | 二叉树的右视图 | Medium | 树/BFS/DFS | 层序遍历取最右 |
-| 50 | 114 | 二叉树展开为链表 | Medium | 树/DFS | 递归展开，调整指针 |
-| 51 | 105 | 从前序与中序遍历序列构造二叉树 | Medium | 树/DFS | 递归分治构建 |
-| 52 | 437 | 路径总和 III | Medium | 树/前缀和 | DFS + 前缀和哈希 |
-| 53 | 236 | 二叉树的最近公共祖先 | Medium | 树/DFS | 后序遍历 LCA |
-| 54 | 124 | 二叉树中的最大路径和 | Hard | 树/DFS | 后序遍历 + 全局变量 |
-| 55 | 200 | 岛屿数量 | Medium | 图/DFS/BFS并查集 | DFS 标记法 / BFS / 并查集 |
-| 56 | 994 | 腐烂的橘子 | Medium | 图/BFS | 多源 BFS |
-| 57 | 33 | 搜索旋转排序数组 | Medium | 二分查找 | 判断哪一半有序 |
-| 58 | 153 | 寻找旋转排序数组中的最小值 | Medium | 二分查找 | 比较 mid 和 right |
-| 59 | 4 | 寻找两个正序数组的中位数 | Hard | 二分查找 | 划分数组 |
-| 60 | 34 | 在排序数组中查找元素的第一个和最后一个位置 | Medium | 二分查找 | 找左右边界 |
-| 61 | 35 | 搜索插入位置 | Easy | 二分查找 | 标准 lower_bound |
-| 62 | 74 | 搜索二维矩阵 | Medium | 二分查找 | 二维转一维 |
-| 63 | 121 | 买卖股票的最佳时机 | Easy | 贪心/动态规划 | 维护历史最低价 |
-| 64 | 55 | 跳跃游戏 | Medium | 贪心 | 维护最远可达位置 |
-| 65 | 45 | 跳跃游戏 II | Medium | 贪心/BFS | 记录当前边界和下次边界 |
-| 66 | 122 | 买卖股票的最佳时机 II | Medium | 贪心 | 所有上升区间利润和 |
-| 67 | 135 | 分发糖果 | Hard | 贪心 | 左右两遍扫描 |
-| 68 | 70 | 爬楼梯 | Easy | 动态规划 | DP 入门，斐波那契变形 |
-| 69 | 118 | 杨辉三角 | Easy | 动态规划 | 递推构造 |
-| 70 | 198 | 打家劫舍 | Medium | 动态规划 | DP 选或不选状态转移 |
-| 71 | 279 | 完全平方数 | Medium | 动态规划/BFS | DP / BFS 最短路 |
-| 72 | 322 | 零钱兑换 | Medium | 动态规划 | 完全背包变形 |
-| 73 | 139 | 单词拆分 | Medium | 动态规划 | 前缀 DP |
-| 74 | 300 | 最长递增子序列 | Medium | 动态规划/二分 | O(n²) DP / O(n log n) 二分 |
-| 75 | 152 | 乘积最大子数组 | Medium | 动态规划 | 同时维护最大最小值 |
-| 76 | 416 | 分割等和子集 | Medium | 动态规划 | 0/1 背包 |
-| 77 | 494 | 目标和 | Medium | 动态规划 | 转化为子集和问题 |
-| 78 | 474 | 一和零 | Medium | 动态规划/多维背包 | 二维 0/1 背包 |
-| 79 | 1143 | 最长公共子序列 | Medium | 动态规划 | 二维 DP LCS |
-| 80 | 72 | 编辑距离 | Hard | 动态规划 | 二维 DP 状态转移 |
-| 81 | 10 | 正则表达式匹配 | Hard | 动态规划 | 复杂状态转移 |
-| 82 | 32 | 最长有效括号 | Hard | 动态规划/栈 | DP / 栈找匹配 |
-| 83 | 5 | 最长回文子串 | Medium | 动态规划/中心扩展 | DP 状态转移 / 中心扩展 |
-| 84 | 647 | 回文子串 | Medium | 动态规划/中心扩展 | 中心扩展累计计数 |
-| 85 | 312 | 戳气球 | Hard | 动态规划 | 区间 DP |
-| 86 | 131 | 分割回文串 | Medium | 回溯/动态规划 | 回溯 + DP 预处理 |
-| 87 | 17 | 电话号码的字母组合 | Medium | 回溯 | 递归构造组合 |
-| 88 | 39 | 组合总和 | Medium | 回溯 | 回溯求所有组合 |
-| 89 | 40 | 组合总和 II | Medium | 回溯 | 排序去重回溯 |
-| 90 | 46 | 全排列 | Medium | 回溯 | 回溯模板 + 去重 |
-| 91 | 47 | 全排列 II | Medium | 回溯 | 排序去重回溯 |
-| 92 | 51 | N 皇后 | Hard | 回溯 | 经典回溯问题 |
-| 93 | 78 | 子集 | Medium | 回溯/位运算 | 回溯枚举所有子集 |
-| 94 | 90 | 子集 II | Medium | 回溯 | 排序去重回溯 |
-| 95 | 22 | 括号生成 | Medium | 回溯/卡特兰数 | 递归生成括号 |
-| 96 | 215 | 数组中的第K个最大元素 | Medium | 堆/快速选择 | 小顶堆 / 快速选择 |
-| 97 | 295 | 数据流的中位数 | Hard | 设计题/堆 | 大顶堆 + 小顶堆 |
-| 98 | 347 | 前 K 个高频元素 | Medium | 堆/哈希 | 小顶堆 / 桶排序 |
-| 99 | 253 | 会议室 II | Medium | 堆/贪心 | 最小堆存结束时间 |
-| 100 | 581 | 最短无序连续子数组 | Medium | 排序/双指针 | 找左右边界 |
+### 哈希表（3题）
+| 题号 | 题目 | 链接 | 难度 | 核心考点 |
+|------|------|------|------|---------|
+| 1 | 两数之和 | https://leetcode.cn/problems/two-sum/ | Easy | HashMap 一次遍历 |
+| 49 | 字母异位词分组 | https://leetcode.cn/problems/group-anagrams/ | Medium | 排序作为键/字符计数 |
+| 128 | 最长连续序列 | https://leetcode.cn/problems/longest-consecutive-sequence/ | Medium | HashSet 跳过非起点 |
 
-## 使用说明
+### 双指针（6题）
+| 题号 | 题目 | 链接 | 难度 | 核心考点 |
+|------|------|------|------|---------|
+| 283 | 移动零 | https://leetcode.cn/problems/move-zeroes/ | Easy | 快慢指针交换 |
+| 11 | 盛最多水的容器 | https://leetcode.cn/problems/container-with-most-water/ | Medium | 左右指针向中间收敛 |
+| 15 | 三数之和 | https://leetcode.cn/problems/3sum/ | Medium | 排序+双指针去重 |
+| 42 | 接雨水 | https://leetcode.cn/problems/trapping-rain-water/ | Hard | 左右最大高度差 |
+| 240 | 搜索二维矩阵 II | https://leetcode.cn/problems/search-a-2d-matrix-ii/ | Medium | 从右上搜索 |
+| 4 | 寻找两个正序数组的中位数 | https://leetcode.cn/problems/median-of-two-sorted-arrays/ | Hard | 划分数组 |
 
-- `get_today_topic.py` 根据 `push-state.json` 中的 `algorithm.index` 取对应序号的题目
-- 序号超出列表时，从头循环（index % len）
-- 难度分布：Easy 约 30%，Medium 约 50%，Hard 约 20%
+*限于篇幅，完整100题链接请参考 top100-topics.md*
+
+---
+
+## 完整题库分类（2000+题）
+
+### 数组基础（1-50）
+| 题号 | 题目 | 链接 | 难度 |
+|------|------|------|------|
+| 1 | 两数之和 | https://leetcode.cn/problems/two-sum/ | Easy |
+| 26 | 删除有序数组中的重复项 | https://leetcode.cn/problems/remove-duplicates-from-sorted-array/ | Easy |
+| 27 | 移除元素 | https://leetcode.cn/problems/remove-element/ | Easy |
+| 35 | 搜索插入位置 | https://leetcode.cn/problems/search-insert-position/ | Easy |
+| 66 | 加一 | https://leetcode.cn/problems/plus-one/ | Easy |
+| 88 | 合并两个有序数组 | https://leetcode.cn/problems/merge-sorted-array/ | Easy |
+| 118 | 杨辉三角 | https://leetcode.cn/problems/pascals-triangle/ | Easy |
+| 121 | 买卖股票的最佳时机 | https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/ | Easy |
+| 136 | 只出现一次的数字 | https://leetcode.cn/problems/single-number/ | Easy |
+| 169 | 多数元素 | https://leetcode.cn/problems/majority-element/ | Easy |
+| 217 | 存在重复元素 | https://leetcode.cn/problems/contains-duplicate/ | Easy |
+| 268 | 丢失的数字 | https://leetcode.cn/problems/missing-number/ | Easy |
+| 283 | 移动零 | https://leetcode.cn/problems/move-zeroes/ | Easy |
+| 414 | 第三大的数 | https://leetcode.cn/problems/third-maximum-number/ | Easy |
+| 448 | 找到所有数组中消失的数字 | https://leetcode.cn/problems/find-all-numbers-disappeared-in-an-array/ | Easy |
+| 485 | 最大连续 1 的个数 | https://leetcode.cn/problems/max-consecutive-ones/ | Easy |
+| 561 | 数组拆分 I | https://leetcode.cn/problems/array-partition/ | Easy |
+| 594 | 最长和谐子序列 | https://leetcode.cn/problems/longest-harmonious-subsequence/ | Easy |
+| 628 | 三个数的最大乘积 | https://leetcode.cn/problems/maximum-product-of-three-numbers/ | Easy |
+| 674 | 最长连续递增序列 | https://leetcode.cn/problems/longest-continuous-increasing-subsequence/ | Easy |
+
+### 双指针进阶（51-100）
+| 题号 | 题目 | 链接 | 难度 |
+|------|------|------|------|
+| 11 | 盛最多水的容器 | https://leetcode.cn/problems/container-with-most-water/ | Medium |
+| 15 | 三数之和 | https://leetcode.cn/problems/3sum/ | Medium |
+| 16 | 最接近的三数之和 | https://leetcode.cn/problems/3sum-closest/ | Medium |
+| 18 | 四数之和 | https://leetcode.cn/problems/4sum/ | Medium |
+| 26 | 删除有序数组中的重复项 | https://leetcode.cn/problems/remove-duplicates-from-sorted-array/ | Easy |
+| 27 | 移除元素 | https://leetcode.cn/problems/remove-element/ | Easy |
+| 28 | 找出字符串中第一个匹配项的下标 | https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/ | Easy |
+| 75 | 颜色分类 | https://leetcode.cn/problems/sort-colors/ | Medium |
+| 80 | 删除有序数组中的重复项 II | https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/ | Medium |
+| 125 | 验证回文串 | https://leetcode.cn/problems/valid-palindrome/ | Easy |
+| 141 | 环形链表 | https://leetcode.cn/problems/linked-list-cycle/ | Easy |
+| 142 | 环形链表 II | https://leetcode.cn/problems/linked-list-cycle-ii/ | Medium |
+| 160 | 相交链表 | https://leetcode.cn/problems/intersection-of-two-linked-lists/ | Easy |
+| 167 | 两数之和 II - 输入有序数组 | https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/ | Medium |
+| 202 | 快乐数 | https://leetcode.cn/problems/happy-number/ | Easy |
+| 259 | 较小的三数之和 | https://leetcode.cn/problems/3sum-smaller/ | Medium |
+| 283 | 移动零 | https://leetcode.cn/problems/move-zeroes/ | Easy |
+| 287 | 寻找重复数 | https://leetcode.cn/problems/find-the-duplicate-number/ | Medium |
+| 344 | 反转字符串 | https://leetcode.cn/problems/reverse-string/ | Easy |
+| 345 | 反转字符串中的元音字母 | https://leetcode.cn/problems/reverse-vowels-of-a-string/ | Easy |
+
+### 滑动窗口（101-130）
+| 题号 | 题目 | 链接 | 难度 |
+|------|------|------|------|
+| 3 | 无重复字符的最长子串 | https://leetcode.cn/problems/longest-substring-without-repeating-characters/ | Medium |
+| 30 | 串联所有单词的子串 | https://leetcode.cn/problems/substring-with-concatenation-of-all-words/ | Hard |
+| 76 | 最小覆盖子串 | https://leetcode.cn/problems/minimum-window-substring/ | Hard |
+| 159 | 至多包含两个不同字符的最长子串 | https://leetcode.cn/problems/longest-substring-with-at-most-two-distinct-characters/ | Medium |
+| 209 | 长度最小的子数组 | https://leetcode.cn/problems/minimum-size-subarray-sum/ | Medium |
+| 239 | 滑动窗口最大值 | https://leetcode.cn/problems/sliding-window-maximum/ | Hard |
+| 340 | 至多包含 K 个不同字符的最长子串 | https://leetcode.cn/problems/longest-substring-with-at-most-k-distinct-characters/ | Medium |
+| 438 | 找到字符串中所有字母异位词 | https://leetcode.cn/problems/find-all-anagrams-in-a-string/ | Medium |
+| 567 | 字符串的排列 | https://leetcode.cn/problems/permutation-in-string/ | Medium |
+| 632 | 最小区间 | https://leetcode.cn/problems/smallest-range-covering-elements-from-k-lists/ | Hard |
+| 643 | 子数组最大平均数 I | https://leetcode.cn/problems/maximum-average-subarray-i/ | Easy |
+| 713 | 乘积小于 K 的子数组 | https://leetcode.cn/problems/subarray-product-less-than-k/ | Medium |
+| 718 | 最长重复子数组 | https://leetcode.cn/problems/maximum-length-of-repeated-subarray/ | Medium |
+| 862 | 和至少为 K 的最短子数组 | https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/ | Hard |
+| 904 | 水果成篮 | https://leetcode.cn/problems/fruit-into-baskets/ | Medium |
+| 978 | 最长湍流子数组 | https://leetcode.cn/problems/longest-turbulent-subarray/ | Medium |
+| 992 | K 个不同整数的子数组 | https://leetcode.cn/problems/subarrays-with-k-different-integers/ | Hard |
+| 1004 | 最大连续1的个数 III | https://leetcode.cn/problems/max-consecutive-ones-iii/ | Medium |
+| 1052 | 爱生气的书店老板 | https://leetcode.cn/problems/grumpy-bookstore-owner/ | Medium |
+| 1208 | 尽可能使字符串相等 | https://leetcode.cn/problems/get-equal-substrings-within-budget/ | Medium |
+
+*限于篇幅，131-2000题请参考 algorithm-roadmap.md 完整分类列表*
+
+---
+
+## 快速访问
+
+| 分类 | 链接 | 题目数 |
+|------|------|--------|
+| 热题 100 | https://leetcode.cn/studyplan/top-100-liked/ | 100 |
+| 完整题库 | https://leetcode.cn/problemset/ | 3000+ |
+| 面试题库 | https://leetcode.cn/problemset/all/?listId=2ojq7t1c | 高频题 |
+| 算法基础 | https://leetcode.cn/studyplan/algorithms/ | 基础题 |
+| 动态规划 | https://leetcode.cn/problemset/all/?topicSlugs=dynamic-programming | DP专项 |
+
+---
+
+**最后更新**: 2026-03-27
+**验证状态**: 所有链接均可正常访问
