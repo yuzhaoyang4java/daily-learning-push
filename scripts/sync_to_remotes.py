@@ -54,8 +54,7 @@ def main():
         print(f"{remote}: {'✅ 成功' if success else '❌ 失败'}")
 
     print()
-    print("💡 CodeWizHub 版本请手动发布：")
-    print("   https://codewiz.devops.xiaohongshu.com/hub/daily-learning-push")
+    print("💡 CodeWizHub 版本请手动发布（如已配置）")
 
     return 0 if all(s for _, s in results) else 1
 
