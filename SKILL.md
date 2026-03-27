@@ -121,31 +121,39 @@ python3 scripts/update_push_state.py --period afternoon  # 下午
 
 6. 在当前会话展示内容，并回复 Redoc 链接给用户
 
-## Redoc 配置（可选）
+## 首次使用：一键初始化
 
-如果需要将推送内容归档到 Redoc 学习空间，需先配置：
+**新用户只需运行一次**，自动完成所有配置：
 
-### 创建配置
-
-在你的工作区运行：
-
-```python
-# 创建 Redoc 配置文件
-import json
-
-config = {
-  "parentDocId": "你的学习空间父文档 shortcutId",
-  "enabled": True,
-  "autoUpdateIndex": True
-}
-
-with open('~/.openclaw/workspace/memory/.redoc-config.json', 'w') as f:
-  json.dump(config, f, indent=2)
+```bash
+python3 ~/.openclaw/workspace/skills/daily-learning-push/scripts/init_user.py
 ```
 
-### 获取父文档shortcutId步骤
+脚本会自动：
+1. ✅ 创建你自己的 Redoc 学习空间父文档
+2. ✅ 生成 `memory/.redoc-config.json` 配置
+3. ✅ 初始化 `push-state.json`（从 Day 1 开始）
 
-1. 在 Redoc 创建学习空间父文档（如：`个人学习空间·技术成长`）
+每位用户拥有独立的父文档，互不干扰。
+
+---
+
+## Redoc 配置（可选，初始化后自动完成）
+
+如果需要手动配置，编辑 `~/.openclaw/workspace/memory/.redoc-config.json`：
+
+```json
+{
+  "parentDocId": "你的学习空间父文档 shortcutId",
+  "parentDocUrl": "https://docs.xiaohongshu.com/doc/xxxx",
+  "enabled": true,
+  "autoUpdateIndex": true
+}
+```
+
+### 手动获取父文档 shortcutId
+
+1. 在 Redoc 创建学习空间父文档（如：`我的技术学习空间`）
 2. 打开文档 → 复制 URL 中的 shortcutId
 3. 例如：`https://docs.xiaohongshu.com/doc/ABCD1234` → shortcutId = `ABCD1234`
 
