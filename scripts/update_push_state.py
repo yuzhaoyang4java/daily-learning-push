@@ -3,7 +3,7 @@
 推送完成后更新 push-state.json：
 - 更新 lastPushDate 为今天
 - totalDays + 1
-- 三方向 index 各 + 1
+- 四方向 index 各 + 1（algorithm / architecture / ai / technews）
 """
 
 import json
@@ -27,16 +27,17 @@ else:
     state = {
         "lastPushDate": None,
         "totalDays": 0,
-        "nextIndex": {"algorithm": 0, "architecture": 0, "ai": 0}
+        "nextIndex": {"algorithm": 0, "architecture": 0, "ai": 0, "technews": 0}
     }
 
 # 更新状态
 state["lastPushDate"] = date.today().isoformat()
 state["totalDays"] = state.get("totalDays", 0) + 1
-idx = state.get("nextIndex", {"algorithm": 0, "architecture": 0, "ai": 0})
+idx = state.get("nextIndex", {})
 idx["algorithm"]    = idx.get("algorithm", 0) + 1
 idx["architecture"] = idx.get("architecture", 0) + 1
 idx["ai"]           = idx.get("ai", 0) + 1
+idx["technews"]     = idx.get("technews", 0) + 1
 state["nextIndex"] = idx
 
 with open(STATE_FILE, "w", encoding="utf-8") as f:
