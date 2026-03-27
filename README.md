@@ -40,12 +40,7 @@ cd ~/.openclaw/workspace/skills
 git clone https://github.com/yuzhaoyang4java/daily-learning-push.git
 ```
 
-或公司内网 GitLab：
-
-```bash
-cd ~/.openclaw/workspace/skills
-git clone git@code.devops.xiaohongshu.com:zhaoyangyu/ai-daily-learning-push.git daily-learning-push
-```
+如果你的公司内网有 GitLab 镜像，也可以从内网克隆（地址由管理员提供）。
 
 ### 第二步：一键初始化
 
@@ -113,7 +108,7 @@ bash scripts/heartbeat_check.sh
 
 ```bash
 cat ~/.openclaw/workspace/memory/.redoc-config.json
-# 输出：{ "parentDocUrl": "https://docs.xiaohongshu.com/doc/xxxx", ... }
+# 输出：{ "parentDocUrl": "https://<your-redoc-host>/doc/xxxx", ... }
 ```
 
 ---
